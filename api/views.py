@@ -14,8 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets
-from app_one.models import Student, Note
-from .serializers import StudentSerializer, NoteSerializer
+from app_one.models import Student, Note, User
+from .serializers import StudentSerializer, NoteSerializer, UserSerializer
 from rest_framework import filters, pagination, status
 from django.shortcuts import get_object_or_404
 
@@ -136,3 +136,17 @@ class ClasseFilter(filters.BaseFilterBackend):
             queryset = queryset.filter(classe__exact=classe)
 
         return queryset
+    
+
+class UserModelViewset(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    parser_classes = [JSONParser, MultiPartParser]
+    queryset = User.objects.all()
+    
+    @action(detail=True, url_path='activate-user')
+    def activate(self, request, pk):
+        user = User.objects.get(pk=pk)
+        user.status = True
+        user.save()
+        serializer = self.get_serializer(instance=user)
+        return Response(serializer.data)
