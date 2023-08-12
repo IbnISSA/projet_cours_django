@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from app_one import views
 
+
 urlpatterns = [
     path('', views.index, name="index-url"),
     path('admin/', admin.site.urls, name="admin-url"),

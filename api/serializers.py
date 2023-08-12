@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app_one.models import Student
+from app_one.models import Student, Note
 
 # Serialiseur permettant de transformer un objet complexe(exemple modèle Django) en un dictionnaire Python
 # Ceci est un serialiseur simple
@@ -12,4 +12,11 @@ from app_one.models import Student
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
+        fields = "__all__"
+        # fields = ['nom', 'prenom', 'age']
+
+class NoteSerializer(serializers.ModelSerializer):
+    student = StudentSerializer()
+    class Meta:
+        model = Note
         fields = "__all__"
