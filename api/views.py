@@ -14,8 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets
-from app_one.models import Student, Note, User
-from .serializers import StudentSerializer, NoteSerializer, UserSerializer
+from app_one.models import Student, Note, User, Event
+from .serializers import EventSerializer, StudentSerializer, NoteSerializer, UserSerializer
 from rest_framework import filters, pagination, status
 from django.shortcuts import get_object_or_404
 
@@ -177,3 +177,7 @@ class UserModelViewset(viewsets.ModelViewSet):
         user.save()
         serializer = self.get_serializer(instance=user)
         return Response(serializer.data)
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer

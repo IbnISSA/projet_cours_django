@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import hello_world, StudentModelViewset, UserModelViewset, parser_func, token_func, parse_data
+from .views import EventViewSet, hello_world, StudentModelViewset, UserModelViewset, parser_func, token_func, parse_data
 from rest_framework.authtoken import views
 from rest_framework import routers
 from . import views as api_views
@@ -12,6 +12,7 @@ router = routers.SimpleRouter()
 # Enregistrement de la ressource Student avec sa vue correspondante
 router.register(r'students', StudentModelViewset)
 router.register(r'users', UserModelViewset)
+router.register('events', EventViewSet)
 
 urlpatterns = [
     path('rest-api/', hello_world),
