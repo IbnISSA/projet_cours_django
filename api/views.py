@@ -104,23 +104,50 @@ class ClasseFilter(filters.BaseFilterBackend):
 
 
 class MyPagination(pagination.PageNumberPagination):
-    page_size = 2  # Set the default page size
-    page_size_query_param = 'page_size'
+    page_size = 5  # Set the default page size
+    page_size_query_param = 'size'
 
 # Vue basée sur une classe (ModelViewSet)
 class StudentModelViewset(viewsets.ModelViewSet):
     # Définition des classes d'analyse dans une classe
     parser_classes = [MultiPartParser, JSONParser]
-    # Définition des classes de rendu dans une classe
-    # renderer_classes = [JSONRenderer, XMLRenderer]
     # Définition du serializer
     serializer_class = StudentSerializer
-    # Définition de la queryset qui contient tous les éléments d'une table
+    # Définition de la queryset qui contient tous les éléments d'une table et c'est la requête de base sur laquelle les opérations se feront
     queryset = Student.objects.all()
-    # serlializer_class = StudentSerializer
-    # filter_backends = [ClasseFilter]
-    # pagination_class = MyPagination
-    # page_size = 3
+    # Définition d'une classe pour gérer la pagination
+    pagination_class = MyPagination
+    
+    def list(self, request):
+        # Récupère le paramètre age depuis l'url
+        age = request.query_params.get('age')
+        base_queryset = Student.objects.all()
+        if age:
+            base_queryset = base_queryset.filter(age=age)
+        
+        serializer = self.get_serializer(base_queryset, many=True)
+        return Response(serializer.data)
+
+    # def retrieve(self, request, pk):
+    #     pass
+    
+    # def update((self, request, pk)):
+    #     pass
+    
+    # def partial_update((self, request, pk)):
+    #     pass
+    
+    # def destroy(self, request, pk):
+    #     pass
+    def create(self, request):
+        student = Student.objects.create(
+            classe='M2DSIA',
+            nom=request.data.get('nom'),
+            prenom=request.data.get('prenom'),
+            age=request.data.get('age')
+        )
+        serializer = self.get_serializer(student)
+        return Response(serializer.data)
     
     @action(detail=False, url_path='recent-students')
     def recent_users(self, request):
